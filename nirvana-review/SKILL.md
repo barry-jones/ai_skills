@@ -3,12 +3,40 @@ name: nirvana-review
 description: Interactive GTD review session using NirvanaHQ task data. Fetches all tasks, then guides the user through inbox processing and system review one section at a time. Triggers on "weekly review", "daily review", "morning review", or "review my tasks".
 ---
 
+## Getting data
+
+Run the analysis script — it fetches, validates, and formats everything in one pass:
+
+```
+python {skill_base_dir}\scripts\analyse_tasks.py          # daily (default)
+python {skill_base_dir}\scripts\analyse_tasks.py weekly   # weekly
+```
+
+`{skill_base_dir}` is shown in the skill header at the top of this file. The script:
+- Finds today's JSON in `~/nirvana-review/` (or falls back to `latest.json`)
+- Detects and rejects raw API dumps — tells you to run `nirvana_review.py` first if needed
+- Outputs SNAPSHOT, INBOX, OVERDUE, DUE TODAY, PROJECT NEXT ACTIONS, STANDALONE in one read
+
+Read the script output and proceed. Do not query the JSON separately.
+
+---
+
 ## Review types
 
 **Daily (15–20 min):** Process inbox → scan Next Actions → pick today's work.
 **Weekly (60–90 min):** Get Clear → Get Current → Get Creative. Full system review.
 
 Ask which type at the start if not specified.
+
+---
+
+## Orientation
+
+From the SNAPSHOT section of the script output, present:
+
+> **[date · mode]** X inbox · Y overdue (A actionable / B waiting) · Z due today · N active projects (M without next action) · N next actions
+
+Then begin the review.
 
 ---
 
@@ -98,7 +126,7 @@ After presenting: ask which to commit to today. Produce a **Today's Plan** with 
 ## Exit / output
 
 "done" / "stop" / "output checklist" / "exit" → immediately generate and save the checklist. Partial reviews are valid.
-Auto-save after every 10 items processed.
+Auto-save after every 10 items processed — write the partial checklist to the output file so progress is preserved if the session is long.
 
 ---
 
