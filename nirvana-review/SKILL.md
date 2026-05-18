@@ -14,7 +14,7 @@ Ask which type at the start if not specified.
 
 ## Inbox processing
 
-Present inbox items 1 at a time. For each item show the formatted task and a suggestion. User responds: accept / discuss / provide context. Move to next batch when batch resolved.
+Present inbox items **one at a time**. Show the formatted task and a suggestion. User responds: accept / discuss / provide context / skip. Move to next item only when current item is resolved or skipped. No batching.
 
 For every item work through:
 - What is this, exactly?
@@ -79,8 +79,34 @@ context: infer from task — #phone (call/ring/speak to), #email (send/reply/mes
 
 ## Daily review
 
-- Process inbox
-- Scan Next Actions — pick what to do today. Prioritise by urgency, energy, time available, context. Flag anything that should be done today but isn't in Next Actions.
+1. Process inbox (one at a time)
+2. Today's work selection (see below)
+
+---
+
+## Today's work selection
+
+Do not present a flat list. Structure in priority order:
+
+### 1. Overdue (must address)
+All tasks past due date. For each: title, project, due date, time estimate. User decides: do today / reschedule / drop.
+
+### 2. Due today
+Tasks due today. Format: title, project, time, energy.
+
+### 3. Project-critical next actions
+For each active project, the single task that most unblocks progress. Grouped by project.
+
+```
+[Project name]
+  → [task title]
+     time: Xh  energy: low/med/high  due: YYYY-MM-DD or none
+```
+
+### 4. Standalone / other next actions
+Remaining next actions not attached to a project. After the above groups.
+
+After presenting: ask which to commit to today. Produce a **Today's Plan** in the checklist with selected tasks, total committed time, and energy profile.
 
 ---
 
@@ -93,7 +119,15 @@ Before item leaves inbox:
 
 ---
 
-## Output — end of session
+## Exit / output at any time
+
+User can say **"done"**, **"stop"**, **"output checklist"**, or **"exit"** at any point. On any of these: immediately generate and save the markdown checklist for all decisions made so far. Partial reviews are valid.
+
+Also auto-save after every 10 items processed, in case session is interrupted.
+
+---
+
+## Output
 
 Produce a markdown manual update checklist the user applies in Nirvana.
 Save to: `~/nirvana-review/YYYY-MM-DD-{mode}-checklist.md`
@@ -102,6 +136,23 @@ Save to: `~/nirvana-review/YYYY-MM-DD-{mode}-checklist.md`
 
 ```markdown
 # Nirvana Update Checklist — YYYY-MM-DD (Daily / Weekly Review)
+
+---
+
+## Today's Plan
+Total committed time: Xh Xm
+Energy profile: Xh high / Xh medium / Xh low
+
+### [Project name]
+- [ ] [task title] — Xh, high energy
+
+### Standalone
+- [ ] [task title] — 15m, low energy
+
+---
+
+## Overdue — decisions made
+- "[title]" — [reschedule to YYYY-MM-DD / drop / doing today]
 
 ---
 
@@ -120,6 +171,8 @@ context: Work / Personal / #phone / #email / #computer / Errands etc
 waiting: person name (omit if not applicable)
 due date: YYYY-MM-DD (omit if not applicable)
 location: next / waiting / scheduled / someday
+time: 5m / 10m / 15m / 30m / 45m / 1h / 2h / 3h / 4h / 6h / 8h
+energy: low / medium / high
 why: one line if not obvious (omit if obvious)
 description: updated description — why it matters, done looks like, dependencies, links
 steps:
@@ -151,6 +204,8 @@ project:
 context:
 waiting:
 due date:
+time:
+energy:
 location:
 why:
 description:
@@ -160,6 +215,14 @@ steps:
 
 ## Projects needing a next action
 - [Project name] → suggested next action
+
+---
+
+## Projects — effort summary
+
+| Project | Remaining tasks | Total estimated time | Next due |
+|---------|----------------|----------------------|----------|
+| [name]  | X tasks         | Xh Xm                | YYYY-MM-DD |
 ```
 
 Rules:
@@ -168,4 +231,5 @@ Rules:
 - Use `#### ` headers to separate entries — not `---` (avoids ambiguity with section dividers).
 - Omit optional fields entirely when not applicable rather than leaving blank.
 - `project: none` for standalone tasks with no natural project home.
+- time and energy required on all processed tasks — prompt if missing.
 
