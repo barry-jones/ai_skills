@@ -51,36 +51,10 @@ time: 5m / 10m / 15m / 30m / 45m / 1h / 2h / 3h / 4h / 6h / 8h
 energy: low / medium / high
 ```
 
-**Infer from task content, don't ask unless unclear:**
+**Infer from task content, don't ask unless genuinely ambiguous:**
 ```
-context: #phone, #email, #computer, Personal, Work, Errands etc — infer from task name, tags, notes, project
+context: infer from task — #phone (call/ring/speak to), #email (send/reply/message), #computer (code/Rally/GitHub/deployment/Confluence), Personal (finance/home/family), Work (team/product/system), Errands (shops/post office/physical errand)
 ```
-
----
-
-## Project vs multi-step task rule
-
-A **project** = an outcome requiring multiple actions that stands alone as its own goal, with its own why and done-looks-like.
-
-A **multi-step task** = multiple actions that serve an existing project. File as steps under that project, not a new project entry.
-
-A **standalone task** = a single action with no natural project home. Fine on its own.
-
-When in doubt: fewer projects is better. A bloated project list is harder to review than a well-organised one.
-
----
-
-## Context inference
-
-Infer context from task name, existing tags, notes, and project. Do not ask. Examples:
-- mentions phone number, "call", "ring", "speak to" → `#phone`
-- mentions email, "send", "reply", "message" → `#email`
-- mentions code, Rally, GitHub, deployment, Confluence → `#computer`
-- personal finance, home, family → `Personal`
-- work system, team, product → `Work`
-- shops, post office, Halifax, physical errand → `Errands`
-
-If genuinely ambiguous, make best guess and note it.
 
 ---
 
@@ -112,10 +86,10 @@ If genuinely ambiguous, make best guess and note it.
 
 ## Context test
 
-Before any item leaves inbox:
-- Task record has: next action starting with verb, project, one-line why if not obvious, link to supporting material
-- Support note has: why it matters, what done looks like, deadline or horizon, dependencies, reference material
-- If project still on your mind after processing — not enough captured. System should carry the load.
+Before item leaves inbox:
+- Next action starts with verb, project assigned, why noted if not obvious
+- Description has: done looks like, deadline/horizon, dependencies, links
+- Still on your mind after? Not enough captured — system must carry the load
 
 ---
 
@@ -195,11 +169,3 @@ Rules:
 - Omit optional fields entirely when not applicable rather than leaving blank.
 - `project: none` for standalone tasks with no natural project home.
 
----
-
-## Considerations
-- Related or duplicate tasks: always check before creating new
-- Follow GTD methodology throughout
-- Each item reviewed one at a time within its batch
-- Batches of 5 keep momentum without overwhelming
-- Display each item in task format with suggestion before asking for decision
