@@ -19,23 +19,24 @@ If programmatic login fails → grab token from browser:
 ## Usage
 
 ```
-# Morning review (default)
+# Daily review (default) — skips Someday/Maybe + Later
 python nirvana_review.py
 
-# Weekly review (includes Someday/Maybe + full project task lists)
+# Weekly review — includes Someday/Maybe + Later for Get Creative phase
 python nirvana_review.py --mode weekly
 
 # Custom output path
 python nirvana_review.py --output C:\Reviews\today.md
 
-# Debug: dump raw API response
+# Debug: also dump raw API JSON to latest-raw.json
 python nirvana_review.py --debug
 
 # Reset cached token (if expired)
 python nirvana_review.py --reset-token
 ```
 
-Output saved to: `~/nirvana-review/YYYY-MM-DD-morning.md` (or `-weekly.md`)
+Output saved to: `~/nirvana-review/YYYY-MM-DD-daily.md` (or `-weekly.md`)
+Stable pointer `~/nirvana-review/latest.md` is always updated.
 
 ## In Claude
 

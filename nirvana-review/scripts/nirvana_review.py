@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Download NirvanaHQ tasks and save raw JSON for GTD review in Claude."""
+"""Download NirvanaHQ tasks and save filtered JSON for GTD review in Claude."""
 
 import argparse
 import hashlib
 import json
 import uuid
 import time
+from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
@@ -15,7 +16,7 @@ API_BASE = "https://api.nirvanahq.com/"
 APP_ID = "nirvana_review"
 APP_VERSION = "1.0"
 CONFIG_FILE = Path.home() / ".nirvana_review"
-JSON_OUT = Path.home() / "nirvana-review" / "latest.json"
+OUTPUT_DIR = Path.home() / "nirvana-review"
 
 STATE_LABELS = {
     "0":  "Inbox",
@@ -26,6 +27,16 @@ STATE_LABELS = {
     "5":  "Later",
     "9":  "Recurring",
     "11": "Active Projects",
+}
+
+# Excluded from daily output to cut token load
+DAILY_SKIP_STATES = {"4", "5"}
+
+# Fields useful for GTD review — everything else dropped
+KEEP_FIELDS = {
+    "id", "type", "state", "parentid",
+    "name", "tags", "etime", "energy",
+    "waitingfor", "startdate", "duedate", "recurring", "note",
 }
 
 
@@ -40,13 +51,8 @@ def _common_params(authtoken):
 
 
 def login(email, password):
-    """Authenticate with email + password and return authtoken."""
     md5_pass = hashlib.md5(password.encode("utf-8")).hexdigest()
-    params = {
-        "api": "rest",
-        "method": "auth.new",
-        **_common_params(""),
-    }
+    params = {"api": "rest", "method": "auth.new", **_common_params("")}
     resp = requests.post(API_BASE, params=params, data={"u": email, "p": md5_pass}, timeout=15)
     resp.raise_for_status()
     data = resp.json()
@@ -57,24 +63,13 @@ def login(email, password):
 
 
 def fetch_everything(authtoken):
-    """Fetch all tasks from NirvanaHQ and return raw JSON."""
-    params = {
-        "api": "rest",
-        "method": "everything",
-        **_common_params(authtoken),
-    }
+    params = {"api": "rest", "method": "everything", **_common_params(authtoken)}
     resp = requests.get(API_BASE, params=params, timeout=30)
     resp.raise_for_status()
     return resp.json()
 
 
 def load_config():
-    """Load config from ~/.nirvana_review.
-
-    Handles two formats:
-    - Legacy: raw token on single line (no '=')
-    - Current: KEY=VALUE lines
-    """
     config = {}
     if not CONFIG_FILE.exists():
         return config
@@ -82,9 +77,7 @@ def load_config():
     lines = content.splitlines()
     has_equals = any("=" in line for line in lines if line and not line.startswith("#"))
     if not has_equals and content:
-        # Legacy format — entire file is a raw token
         config["AUTHTOKEN"] = content
-        # Migrate to proper format immediately
         save_config(config)
     else:
         for line in lines:
@@ -103,11 +96,10 @@ def save_config(config):
     try:
         CONFIG_FILE.chmod(0o600)
     except Exception:
-        pass  # Windows may not support chmod
+        pass
 
 
 def get_authtoken(config, args):
-    """Return authtoken, prompting/logging in if needed."""
     if getattr(args, "token", None):
         return args.token
     if "AUTHTOKEN" in config:
@@ -138,32 +130,41 @@ def get_authtoken(config, args):
         return token
 
 
-def summarise(data):
-    """Print a quick count summary to stdout."""
-    tasks = [r["task"] for r in data.get("results", []) if "task" in r]
-    active = [t for t in tasks if t.get("completed", "0") == "0" and t.get("deleted", "0") == "0"]
-    projects = [t for t in active if t.get("type", "0") == "1"]
-    solo = [t for t in active if t.get("type", "0") != "1"]
+def filter_tasks(data, skip_states=None):
+    """Return active tasks with only review-relevant fields."""
+    tasks = []
+    for r in data.get("results", []):
+        if "task" not in r:
+            continue
+        t = r["task"]
+        if t.get("completed", "0") != "0" or t.get("deleted", "0") != "0":
+            continue
+        if skip_states and t.get("state", "0") in skip_states:
+            continue
+        tasks.append({k: v for k, v in t.items() if k in KEEP_FIELDS})
+    return tasks
 
-    from collections import Counter
+
+def summarise(tasks, mode):
+    projects = [t for t in tasks if t.get("type", "0") == "1"]
+    solo = [t for t in tasks if t.get("type", "0") != "1"]
     state_counts = Counter(t.get("state", "?") for t in solo)
-    proj_counts  = Counter(t.get("state", "?") for t in projects)
 
-    print(f"\nActive: {len(active)} total ({len(projects)} projects, {len(solo)} tasks)")
+    print(f"\n{mode.capitalize()} mode — {len(tasks)} active items ({len(projects)} projects, {len(solo)} tasks)")
     for state, label in STATE_LABELS.items():
-        tc = state_counts.get(state, 0)
-        pc = proj_counts.get(state, 0)
-        if tc or pc:
-            parts = []
-            if tc: parts.append(f"{tc} tasks")
-            if pc: parts.append(f"{pc} projects")
-            print(f"  {label}: {', '.join(parts)}")
+        c = state_counts.get(state, 0)
+        if c:
+            print(f"  {label}: {c}")
 
 
 def main():
     parser = argparse.ArgumentParser(description="Fetch NirvanaHQ tasks for GTD review in Claude")
+    parser.add_argument("--mode", choices=["daily", "weekly"], default="daily",
+                        help="daily (default): skips Someday/Maybe + Later. weekly: includes all.")
     parser.add_argument("--token", help="Override authtoken")
     parser.add_argument("--reset-token", action="store_true", help="Clear cached authtoken")
+    parser.add_argument("--output", help="Override output file path")
+    parser.add_argument("--debug", action="store_true", help="Also save raw API JSON to latest-raw.json")
     args = parser.parse_args()
 
     config = load_config()
@@ -180,11 +181,34 @@ def main():
     data = fetch_everything(authtoken)
     print("OK")
 
-    JSON_OUT.parent.mkdir(parents=True, exist_ok=True)
-    JSON_OUT.write_text(json.dumps(data, indent=2), encoding="utf-8")
-    print(f"Saved: {JSON_OUT}")
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    summarise(data)
+    if args.debug:
+        raw_path = OUTPUT_DIR / "latest-raw.json"
+        raw_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+        print(f"Raw JSON: {raw_path}")
+
+    skip_states = DAILY_SKIP_STATES if args.mode == "daily" else set()
+    tasks = filter_tasks(data, skip_states=skip_states)
+
+    out_data = {
+        "fetched": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "mode": args.mode,
+        "tasks": tasks,
+    }
+    payload = json.dumps(out_data, separators=(",", ":"), ensure_ascii=False)
+
+    if args.output:
+        out_path = Path(args.output)
+    else:
+        stamp = datetime.now().strftime("%Y-%m-%d")
+        out_path = OUTPUT_DIR / f"{stamp}-{args.mode}.json"
+
+    out_path.write_text(payload, encoding="utf-8")
+    (OUTPUT_DIR / "latest.json").write_text(payload, encoding="utf-8")
+    print(f"Saved: {out_path}  ({len(payload):,} chars)")
+
+    summarise(tasks, args.mode)
 
 
 if __name__ == "__main__":
