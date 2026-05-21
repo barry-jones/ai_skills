@@ -23,8 +23,8 @@ Read the script output and proceed. Do not query the JSON separately.
 
 ## Review types
 
-**Daily (15–20 min):** Process inbox → scan Next Actions → pick today's work.
-**Weekly (60–90 min):** Get Clear → Get Current → Get Creative. Full system review.
+**Daily (15–20 min):** Fast, execution-focused. Snapshot → Inbox → Needs Immediate Attention → Suggested Focus for Today.
+**Weekly (60–90 min):** Full system review. All daily sections plus Project Health, Overdue & Waiting, Pattern Analysis, Someday/Maybe, Clean-up, Weekly Priorities.
 
 Ask which type at the start if not specified.
 
@@ -40,9 +40,13 @@ Then begin the review.
 
 ---
 
-## Inbox processing
+## DAILY REVIEW
+
+### 1. Inbox
 
 Present inbox items **one at a time**. Show the task and a suggestion. User responds: accept / discuss / provide context / skip. Move on only when resolved or skipped. No batching.
+
+Skip this section entirely if inbox is empty.
 
 For each item:
 - Actionable? No → delete, file as reference, or Someday/Maybe.
@@ -53,6 +57,76 @@ For each item:
 - Always check for duplicates or related tasks.
 
 If it can't be answered, it's not ready to leave inbox. Either think it through now, or the next action is to do that thinking.
+
+### 2. Needs Immediate Attention
+
+Group overdue actionable tasks by urgency and impact — don't list them item by item. For each cluster, note what's at stake and what a decision would look like. Lead with the tasks most likely to be blocking other people or projects.
+
+Then surface external blockers: Waiting For items where the follow-up date has passed. For each, present the person, what's outstanding, and how long it's been sitting. Prompt: chase today / reschedule / take it back?
+
+Be direct. This section should create urgency where it's warranted and help the user decide what needs to move today.
+
+### 3. Suggested Focus for Today
+
+Recommend 3–5 tasks. Lead with the highest-leverage actions: things that unblock others, meet a deadline, or close out a blocker. Be goal-driven — say *why* each task matters, not just what it is.
+
+Priority order:
+1. Anything blocking another person or project
+2. Tasks due today or tomorrow
+3. Project-critical next actions (the single task most unblocking each active project)
+4. Standalone tasks with near-term due dates
+
+End with: **Total committed: Xh · energy profile (Xh high / Xh medium / Xh low)**
+
+---
+
+## WEEKLY REVIEW
+
+Runs all Daily sections first, then continues:
+
+### 4. Project Health
+
+Review every active project. For each, show:
+- Next action (or flag if missing)
+- Any overdue waiting items
+- Whether it's moved since last week (infer from due dates / task state)
+
+Group into: **Moving** · **Stalled — needs a next action** · **Blocked externally**
+
+For stalled projects: suggest a next action or ask whether it should move to Someday/Maybe.
+For projects with no next action: flag prominently and don't let them pass without a decision.
+
+### 5. Overdue & Waiting Review
+
+Group overdue items by project. For each: decide to do this week / reschedule / drop / chase.
+For Waiting For items: is this person overdue? Prompt for a chase action or a decision to take it back.
+
+### 6. Pattern Analysis
+
+Look across the whole system and surface structural issues. Examples of things to flag:
+- Tasks missing time or energy estimates — prompt to add them
+- Clusters of standalones that belong together or under an existing project
+- High-effort tasks (3h+) sitting in Next with no scheduling intent — they need time-blocking or breaking down
+- Recurring themes in what keeps going overdue — is there a capacity or prioritisation issue?
+- Projects that haven't moved in multiple weeks
+- Multiple versions of the same task (duplicates, stale copies)
+
+Be specific and honest. This section is where the review earns its keep.
+
+### 7. Someday/Maybe (Get Creative)
+
+Review Someday/Maybe list. Anything to promote to active? Anything to delete? Any new ideas or captures from the week that belong here? Empty-head sweep — anything not captured yet?
+
+### 8. Clean-up
+
+- Standalone tasks: scan for anything stale, dead, or that belongs under a project
+- Tasks with no time/energy estimates: flag and prompt
+- Completed projects that are still marked active: archive them
+- Duplicates: identify and recommend which to keep
+
+### 9. Weekly Priorities
+
+Name 3–5 focus areas for the coming week — not a task list, but the outcomes that matter. Ground them in the project health and overdue reviews just completed. Be direct about what's most important and why.
 
 ---
 
@@ -77,41 +151,6 @@ context: infer — #phone (call/ring/speak), #email (send/reply/message),
 ```
 
 Infer context from the task title — don't ask unless genuinely ambiguous.
-
----
-
-## Weekly review phases
-
-**Get Clear:** Process inbox to zero. Empty-head sweep — anything not captured yet?
-
-**Get Current:**
-- Every active project has at least one next action? If not: add one or move to Someday/Maybe.
-- Every project note has: why, done-looks-like, deadline/horizon, dependencies?
-- Waiting For: anything overdue needing a chase?
-- Flag projects with no next action — present with suggested fix.
-- Flag overdue items — group by urgency.
-
-**Get Creative:** Someday/Maybe — anything to promote? Anything to delete? New ideas to capture?
-
----
-
-## Daily review
-
-1. Process inbox (one at a time)
-2. Today's work selection
-
----
-
-## Today's work selection
-
-Priority order — do not present a flat list:
-
-1. **Overdue** — all tasks past due date. For each: title, project, due date, time. Decide: do today / reschedule / drop.
-2. **Due today** — title, project, time, energy.
-3. **Project-critical** — the single task that most unblocks each active project, grouped by project.
-4. **Standalone / other next actions** — remaining next actions not attached to a project.
-
-After presenting: ask which to commit to today. Produce a **Today's Plan** with selected tasks, total committed time, and energy profile.
 
 ---
 
