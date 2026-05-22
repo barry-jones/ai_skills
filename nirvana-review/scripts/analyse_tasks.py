@@ -18,14 +18,34 @@ STATE_LABELS = {
 ENERGY = {"": "?", "0": "?", "1": "low", "2": "med", "3": "high"}
 
 
+def fetch_fresh(mode="daily"):
+    """Run nirvana_review.py to pull latest data from the API."""
+    import subprocess
+    fetcher = Path(__file__).parent / "nirvana_review.py"
+    print(f"No data for today — fetching from NirvanaHQ...", flush=True)
+    result = subprocess.run(
+        [sys.executable, str(fetcher), "--mode", mode],
+        capture_output=True, text=True
+    )
+    if result.returncode != 0:
+        print("ERROR: fetch failed.")
+        print(result.stdout)
+        print(result.stderr)
+        sys.exit(1)
+    print(result.stdout.strip())
+
+
 def find_json(mode="daily"):
-    candidates = [
-        BASE / f"{TODAY_DISPLAY}-{mode}.json",
-        BASE / "latest.json",
-    ]
-    for p in candidates:
-        if p.exists():
-            return p
+    today_file = BASE / f"{TODAY_DISPLAY}-{mode}.json"
+    if today_file.exists():
+        return today_file
+    fetch_fresh(mode)
+    if today_file.exists():
+        return today_file
+    # fall back to latest if fetch somehow wrote elsewhere
+    latest = BASE / "latest.json"
+    if latest.exists():
+        return latest
     return None
 
 

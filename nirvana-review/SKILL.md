@@ -13,7 +13,7 @@ python {skill_base_dir}\scripts\analyse_tasks.py weekly   # weekly
 ```
 
 `{skill_base_dir}` is shown in the skill header at the top of this file. The script:
-- Finds today's JSON in `~/nirvana-review/` (or falls back to `latest.json`)
+- Auto-fetches from NirvanaHQ if today's JSON is missing (token must be cached in `~/.nirvana_review`)
 - Detects and rejects raw API dumps — tells you to run `nirvana_review.py` first if needed
 - Outputs SNAPSHOT, INBOX, OVERDUE, DUE TODAY, PROJECT NEXT ACTIONS, STANDALONE in one read
 
@@ -60,9 +60,9 @@ If it can't be answered, it's not ready to leave inbox. Either think it through 
 
 ### 2. Needs Immediate Attention
 
-Group overdue actionable tasks by urgency and impact — don't list them item by item. For each cluster, note what's at stake and what a decision would look like. Lead with the tasks most likely to be blocking other people or projects.
+Group overdue actionable tasks by urgency and impact — don't list them item by item. For each cluster, note what's at stake and what a decision would look like. Lead with the tasks most likely to be blocking other people or projects. This should also include a project overview, again by urgency, we should be heading towards goals. I want a quick overview of the state of things.
 
-Then surface external blockers: Waiting For items where the follow-up date has passed. For each, present the person, what's outstanding, and how long it's been sitting. Prompt: chase today / reschedule / take it back?
+Then surface external blockers: Waiting For items where the follow-up date has passed. For each, present the person, what's outstanding, and how long it's been sitting. 
 
 Be direct. This section should create urgency where it's warranted and help the user decide what needs to move today.
 
