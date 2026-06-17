@@ -135,15 +135,15 @@ Name 3–5 focus areas for the coming week — not a task list, but the outcomes
 ```
 title: verb-first next action
 original title: if title was changed
-project: name or "standalone"
-waiting: person name if delegated
+time: 5m / 10m / 15m / 30m / 45m / 1h / 2h / 3h / 4h / 6h / 8h
+energy: low / medium / high
 due date: yyyy-mm-dd if applicable
+waiting: person name if delegated
 location: next / waiting / scheduled / someday
+project: name or "standalone"
 why: one line if not obvious
 description: done-looks-like, deadline/horizon, dependencies, links
 steps: numbered list if multi-step
-time: 5m / 10m / 15m / 30m / 45m / 1h / 2h / 3h / 4h / 6h / 8h
-energy: low / medium / high
 context: infer — #phone (call/ring/speak), #email (send/reply/message),
          #computer (code/Rally/GitHub/Confluence/deployment),
          Personal (finance/home/family), Work (team/product/system),
