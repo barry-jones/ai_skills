@@ -23,8 +23,8 @@ Read the script output and proceed. Do not query the JSON separately.
 
 ## Review types
 
-**Daily (15–20 min):** Fast, execution-focused. Snapshot → Inbox → Needs Immediate Attention → Suggested Focus for Today.
-**Weekly (60–90 min):** Full system review. All daily sections plus Project Health, Overdue & Waiting, Pattern Analysis, Someday/Maybe, Clean-up, Weekly Priorities.
+**Daily (15–20 min):** Fast, execution-focused. Mind Sweep → Snapshot → Inbox → Needs Immediate Attention → Suggested Focus for Today.
+**Weekly (60–90 min):** Full system review structured as GET CLEAR → GET CURRENT → GET CREATIVE. All daily sections (as GET CURRENT) plus Horizons Check, Project Health, Overdue & Waiting, Pattern Analysis, Someday/Maybe (with trigger sweep), Clean-up, Weekly Priorities.
 
 Ask which type at the start if not specified.
 
@@ -41,6 +41,12 @@ Then begin the review.
 ---
 
 ## DAILY REVIEW
+
+### 0. Mind Sweep
+
+Before touching the system, ask: "What has your attention right now — anything not yet captured?"
+
+Prompt once, briefly. If anything surfaces, capture it to the inbox before proceeding. Do not dwell here — one sweep, then move on.
 
 ### 1. Inbox
 
@@ -68,9 +74,15 @@ Be direct. This section should create urgency where it's warranted and help the 
 
 ### 3. Suggested Focus for Today
 
-Recommend 3–5 tasks. Lead with the highest-leverage actions: things that unblock others, meet a deadline, or close out a blocker. Be goal-driven — say *why* each task matters, not just what it is.
+Apply the four GTD engagement filters to select 3–5 tasks:
+1. **Context** — what can actually be done right now given location and tools?
+2. **Time available** — how long does the user have before their next commitment?
+3. **Energy** — match task energy demands to current energy level (ask if not obvious)
+4. **Priority** — within what fits the above, lead with highest-leverage actions
 
-Priority order:
+Lead with things that unblock others, meet a deadline, or close a blocker. Say *why* each task matters, not just what it is.
+
+Priority order (within the energy/context filter):
 1. Anything blocking another person or project
 2. Tasks due today or tomorrow
 3. Project-critical next actions (the single task most unblocking each active project)
@@ -82,7 +94,27 @@ End with: **Total committed: Xh · energy profile (Xh high / Xh medium / Xh low)
 
 ## WEEKLY REVIEW
 
-Runs all Daily sections first, then continues:
+### GET CLEAR (before running the script)
+
+Walk through this before presenting any task data:
+
+**Collect loose materials** — "Any paper, notes, receipts, or captured items not yet in the system?"
+**Empty your head** — Run a brief Incompletion Trigger sweep. Prompt across these categories (don't list them all — pick 5–7 that feel relevant and ask about them conversationally):
+
+*Professional:* Projects started not completed · commitments to others · communications to make · reports/writing to finish · meetings to debrief · waiting for replies · professional development · financial items
+*Personal:* Home/household issues · health appointments · family commitments · upcoming events · personal admin · finances · legal matters · learning goals · errands
+
+Capture anything surfaced to the inbox before proceeding.
+
+---
+
+Then run the analysis script and proceed with GET CURRENT (sections 0–3 from Daily Review, but skip section 0 since we just did it) → GET CREATIVE (sections 7+).
+
+---
+
+### GET CURRENT
+
+Runs all Daily sections (1–3) first, then continues:
 
 ### 4. Project Health
 
@@ -93,8 +125,28 @@ Review every active project. For each, show:
 
 Group into: **Moving** · **Stalled — needs a next action** · **Blocked externally**
 
-For stalled projects: suggest a next action or ask whether it should move to Someday/Maybe.
+For stalled projects: apply the Natural Planning Model — ask in order:
+1. *Why* — is the purpose still clear and relevant?
+2. *What* — what does success look like for this project?
+3. *Brainstorm* — what are all the things that need to happen?
+4. *Organize* — what's the sequence or priority among those things?
+5. *Next action* — what's the single next physical action?
+
+If the project is still on Barry's mind after this, more capture is needed. If purpose is no longer relevant → Someday/Maybe or drop.
+
 For projects with no next action: flag prominently and don't let them pass without a decision.
+
+### 4b. Horizons of Focus Alignment
+
+Check that the project list reflects Barry's higher horizons. Present this as a quick scan, not an interrogation — one or two pointed questions per horizon:
+
+**H3 (1–2 year goals):** Do the active projects collectively move the needle on his current goals (CTO of Optum UK, London Marathon, property goals, financial targets)? Any goal with no active project?
+
+**H2 (Areas of focus):** Any area of responsibility (Family, Home, Productivity, Work, Software Development, Finances, Cooking, Personal Growth) with nothing active or no recent action — is that intentional?
+
+**H4/H5 (Vision / Purpose):** Skip unless a project review triggered a "does this still align?" question. Flag it if so — don't force it every week.
+
+Flag misalignments. If a goal has no project, prompt to create one or park it in Someday/Maybe. If a project has no goal-connection, prompt to check whether it still belongs active.
 
 ### 5. Overdue & Waiting Review
 
@@ -113,9 +165,19 @@ Look across the whole system and surface structural issues. Examples of things t
 
 Be specific and honest. This section is where the review earns its keep.
 
-### 7. Someday/Maybe (Get Creative)
+### GET CREATIVE
 
-Review Someday/Maybe list. Anything to promote to active? Anything to delete? Any new ideas or captures from the week that belong here? Empty-head sweep — anything not captured yet?
+### 7. Someday/Maybe + Creative Sweep
+
+Review the Someday/Maybe list:
+- Anything to promote to active now? (If yes → project with next action)
+- Anything no longer of interest? → delete, don't hesitate
+
+Then ask: "Any new, hare-brained, creative, risk-taking ideas — anything you've been meaning to explore or try?" Capture them here without judgement.
+
+Final trigger check: "Anything from the week — conversations, reading, observations — that's still sitting in the back of your mind that you haven't captured?"
+
+Treat this section as genuinely creative, not just administrative. Ideas are valid captures.
 
 ### 8. Clean-up
 
@@ -135,15 +197,15 @@ Name 3–5 focus areas for the coming week — not a task list, but the outcomes
 ```
 title: verb-first next action
 original title: if title was changed
-time: 5m / 10m / 15m / 30m / 45m / 1h / 2h / 3h / 4h / 6h / 8h
-energy: low / medium / high
-due date: yyyy-mm-dd if applicable
-waiting: person name if delegated
-location: next / waiting / scheduled / someday
 project: name or "standalone"
+waiting: person name if delegated
+due date: yyyy-mm-dd if applicable
+location: next / waiting / scheduled / someday
 why: one line if not obvious
 description: done-looks-like, deadline/horizon, dependencies, links
 steps: numbered list if multi-step
+time: 5m / 10m / 15m / 30m / 45m / 1h / 2h / 3h / 4h / 6h / 8h
+energy: low / medium / high
 context: infer — #phone (call/ring/speak), #email (send/reply/message),
          #computer (code/Rally/GitHub/Confluence/deployment),
          Personal (finance/home/family), Work (team/product/system),
